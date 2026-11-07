@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Description Match Report</title>
+<style>
+@page { size: A4; margin: 18mm; }
+body { font-family: Arial, sans-serif; color: #17263b; line-height: 1.55; font-size: 12px; }
+header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 24px; }
+.kicker { color: #2563eb; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; }
+h1 { font-size: 25px; margin: 6px 0; color: #102033; }
+h2 { font-size: 15px; margin-top: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 7px; }
+.muted { color: #64748b; }
+.score { background: #eff6ff; border: 1px solid #dbeafe; border-radius: 12px; padding: 18px; margin: 18px 0; }
+.score strong { display: block; color: #1d4ed8; font-size: 34px; }
+.grid { display: flex; gap: 18px; }
+.col { flex: 1; min-width: 0; }
+li { margin: 5px 0; }
+.note { background: #f8fafc; border-left: 3px solid #2563eb; padding: 12px 14px; margin-top: 20px; }
+footer { border-top: 1px solid #e2e8f0; margin-top: 35px; padding-top: 10px; color: #94a3b8; font-size: 10px; }
+</style>
+</head>
+<body>
+{% if jd_analysis %}
+<header>
+    <div class="kicker">RESUMEATS · JOB DESCRIPTION ASSESSMENT</div>
+    <h1>Job Description Match Report</h1>
+    <div class="muted">{{ timestamp | format_date }}</div>
+</header>
+
+<h2>Job Description Overview</h2>
+<p><strong>Job title:</strong>
+{{ jd_analysis.job_title if jd_analysis.job_title else 'Not specified in the job description' }}
+</p>
+
+{% if jd_analysis.score_available and jd_analysis.match_score is not none %}
+<div class="score">
+    <span class="muted">Resume-to-JD match score</span>
+    <strong>{{ "%.1f" | format(jd_analysis.match_score) }}%</strong>
+    <span class="muted">A comparison of your resume against the supplied job description, not a hiring probability.</span>
+</div>
+{% else %}
+<div class="note">
+    <strong>Match score unavailable</strong><br>
+    {{ jd_analysis.message or 'There are insufficient explicit requirements to calculate a reliable match score.' }}
+</div>
+{% endif %}
+
+<h2>Required Skills</h2>
+<div class="grid">
+    <div class="col">
+        <h2>Matched Skills</h2>
+        {% if jd_analysis.matched_skills %}
+        <ul>
+            {% for item in jd_analysis.matched_skills %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">No required skills matched.</p>
+        {% endif %}
+    </div>
+    <div class="col">
+        <h2>Missing Skills</h2>
+        {% if jd_analysis.missing_skills %}
+        <ul>
+            {% for item in jd_analysis.missing_skills %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">No missing required skills detected.</p>
+        {% endif %}
+    </div>
+</div>
+
+<h2>Preferred Skills</h2>
+{% if jd_analysis.preferred_matches %}
+<ul>
+    {% for item in jd_analysis.preferred_matches %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="muted">No preferred skills were matched or identified.</p>
+{% endif %}
+
+<h2>Project and Experience Evidence</h2>
+<p><strong>Evidence-backed skills:</strong>
+{{ jd_analysis.evidence_backed_skills | join(', ') if jd_analysis.evidence_backed_skills else 'No direct project or experience evidence detected.' }}
+</p>
+<p><strong>Relevant projects:</strong>
+{{ jd_analysis.relevant_projects | join(', ') if jd_analysis.relevant_projects else 'No relevant project entry detected.' }}
+</p>
+<p><strong>Relevant experience:</strong>
+{{ jd_analysis.relevant_experience | join(', ') if jd_analysis.relevant_experience else 'No relevant experience entry detected.' }}
+</p>
+
+{% if jd_analysis.score_method %}
+<div class="note">
+    <strong>Scoring method</strong><br>
+    {{ jd_analysis.score_method }}
+</div>
+{% endif %}
+
+<footer>
+    ResumeATS · Automated resume guidance. Verify all skills and claims before adding them to your resume.
+</footer>
+{% endif %}
+</body>
+</html>

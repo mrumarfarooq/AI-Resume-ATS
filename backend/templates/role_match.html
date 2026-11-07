@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Role Match Report</title>
+<style>
+@page { size: A4; margin: 18mm; }
+body { font-family: Arial, sans-serif; color: #17263b; line-height: 1.55; font-size: 12px; }
+header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 24px; }
+.kicker { color: #2563eb; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; }
+h1 { font-size: 25px; margin: 6px 0; color: #102033; }
+h2 { font-size: 15px; margin-top: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 7px; }
+.muted { color: #64748b; }
+.score { background: #eff6ff; border: 1px solid #dbeafe; border-radius: 12px; padding: 18px; margin: 18px 0; }
+.score strong { display: block; color: #1d4ed8; font-size: 34px; }
+.grid { display: flex; gap: 18px; }
+.col { flex: 1; }
+li { margin: 5px 0; }
+.note { background: #f8fafc; border-left: 3px solid #2563eb; padding: 12px 14px; margin-top: 20px; }
+footer { border-top: 1px solid #e2e8f0; margin-top: 35px; padding-top: 10px; color: #94a3b8; font-size: 10px; }
+</style>
+</head>
+<body>
+<header><div class="kicker">RESUMEATS · ROLE ASSESSMENT</div><h1>Job Role Match Report</h1><div class="muted">{{ timestamp | format_date }}</div></header>
+{% if role_analysis %}
+  <h2>Selected role: {{ role_analysis.job_role }}</h2>
+  {% if role_analysis.score_available %}
+    <div class="score"><span class="muted">Role match score</span><strong>{{ "%.1f" | format(role_analysis.match_score) }}%</strong><span class="muted">A profile-based estimate, not a hiring probability.</span></div>
+    <div class="grid">
+      <div class="col"><h2>Matched required skills</h2>
+        {% if role_analysis.matched_skills %}<ul>{% for item in role_analysis.matched_skills %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p class="muted">No required skills matched.</p>{% endif %}
+      </div>
+      <div class="col"><h2>Missing required skills</h2>
+        {% if role_analysis.missing_skills %}<ul>{% for item in role_analysis.missing_skills %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p class="muted">No missing skills in this baseline profile.</p>{% endif %}
+      </div>
+    </div>
+    <h2>Project and experience evidence</h2>
+    <p><strong>Evidence-backed skills:</strong> {{ role_analysis.evidence_backed_skills | join(', ') if role_analysis.evidence_backed_skills else 'No direct mentions detected.' }}</p>
+    <p><strong>Relevant projects:</strong> {{ role_analysis.relevant_projects | join(', ') if role_analysis.relevant_projects else 'No relevant project entry detected.' }}</p>
+    <p><strong>Relevant experience:</strong> {{ role_analysis.relevant_experience | join(', ') if role_analysis.relevant_experience else 'No relevant experience entry detected.' }}</p>
+    <div class="note"><strong>Scoring method</strong><br>{{ role_analysis.score_method }}</div>
+  {% else %}
+    <div class="note">{{ role_analysis.message }}</div>
+  {% endif %}
+{% else %}
+  <p class="muted">No job role was selected for this analysis.</p>
+{% endif %}
+<footer>ResumeATS · Automated resume guidance. Verify all skills and claims before adding them to your resume.</footer>
+</body></html>
