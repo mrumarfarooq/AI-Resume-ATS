@@ -133,6 +133,7 @@ For detailed component responsibilities, processing flow, and API documentation,
 
 ```text
 ai-resume-ats/
+│
 ├── backend/
 │   ├── api/
 │   ├── core/
@@ -140,19 +141,28 @@ ai-resume-ats/
 │   ├── models/
 │   ├── services/
 │   ├── templates/
-│   └── utils/
+│   ├── utils/
+│   └── main.py
+│
 ├── frontend/
 │   ├── assets/
 │   ├── components/
 │   ├── services/
 │   ├── views/
 │   └── streamlit_app.py
+│
 ├── jupyter notebooks/
+│
 ├── docs/
 │   └── architecture.md
-├── screenshots/
-├── env.example
+│
+├── tests/
+│   └── test_jd_evidence_unit.py
+│
+├── test_jd_evidence.py
 ├── requirements.txt
+├── requirements-dev.txt
+├── .gitignore
 └── README.md
 ```
 
