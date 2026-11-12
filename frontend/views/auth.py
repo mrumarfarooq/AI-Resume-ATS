@@ -1,4 +1,5 @@
 import re
+from html import escape
 import streamlit as st
 from frontend.services import supabase_client
 
@@ -184,136 +185,137 @@ def render() -> None:
                 st.rerun()
 
         elif is_signup:
-            with st.form("signup_form", clear_on_submit=False):
-                email = st.text_input(
-                    "Email address",
-                    key="signup_email",
-                    placeholder="name@example.com",
-                )
+            with st.container(key="signup-card"):
 
-                password = st.text_input(
-                    "Create password",
-                    type="password",
-                    key="signup_pw",
-                    placeholder="At least 8 characters",
-                )
-
-                submitted = st.form_submit_button(
-                    "Create account",
-                    use_container_width=True,
-                    type="primary",
-                )
-
-            if submitted:
-                if not _valid_email(email):
-                    st.session_state.auth_error = (
-                        "Enter a valid email address."
+                with st.form("signup_form", clear_on_submit=False):
+                    email = st.text_input(
+                        "Email address",
+                        key="signup_email",
+                        placeholder="name@example.com",
                     )
+
+                    password = st.text_input(
+                        "Create password",
+                        type="password",
+                        key="signup_pw",
+                        placeholder="At least 8 characters",
+                    )
+
+                    submitted = st.form_submit_button(
+                        "Create account",
+                        use_container_width=True,
+                        type="primary",
+                    )
+
+                if submitted:
+                    if not _valid_email(email):
+                        st.session_state.auth_error = (
+                            "Enter a valid email address."
+                        )
+                        st.rerun()
+
+                    if len(password) < 8:
+                        st.session_state.auth_error = (
+                            "Use a password with at least 8 characters."
+                        )
+                        st.rerun()
+
+                    result = supabase_client.sign_up_with_password(
+                        email.strip(), password
+                    )
+
+                    if "error" in result:
+                        st.session_state.auth_error = result["error"]
+
+                    elif result.get("pending_confirmation"):
+                        st.session_state.auth_info = (
+                            f"Account created. Confirm your email using the "
+                            f"link sent to {result['email']} before signing in."
+                        )
+
+                    else:
+                        _set_authenticated_user(result)
+                        st.session_state.auth_info = "Your account is ready."
+                        st.session_state.current_view = "scorer"
+
                     st.rerun()
 
-                if len(password) < 8:
-                    st.session_state.auth_error = (
-                        "Use a password with at least 8 characters."
-                    )
+                # SIGNUP PAGE TOGGLE
+                if st.button(
+                    "Already have an account? Sign in",
+                    key="auth_switch_to_signin",
+                    type="tertiary",
+                ):
+                    st.session_state["auth_mode"] = "signin"
+                    st.query_params.pop("auth_mode", None)
                     st.rerun()
-
-                result = supabase_client.sign_up_with_password(
-                    email.strip(), password
-                )
-
-                if "error" in result:
-                    st.session_state.auth_error = result["error"]
-
-                elif result.get("pending_confirmation"):
-                    st.session_state.auth_info = (
-                        f"Account created. Confirm your email using the "
-                        f"link sent to {result['email']} before signing in."
-                    )
-
-                else:
-                    _set_authenticated_user(result)
-                    st.session_state.auth_info = "Your account is ready."
-                    st.session_state.current_view = "scorer"
-
-                st.rerun()
-
-            # SIGNUP PAGE TOGGLE
-            if st.button(
-                "Already have an account? Sign in",
-                key="auth_switch_to_signin",
-                type="tertiary",
-            ):
-                st.session_state["auth_mode"] = "signin"
-                st.rerun()
 
         # SIGNIN PAGE
         else:
-            with st.form("signin_form", clear_on_submit=False):
-                email = st.text_input(
-                    "Email address",
-                    key="signin_email",
-                    placeholder="name@example.com",
-                )
+            with st.container(key="signin-card"):
 
-                password = st.text_input(
-                    "Password",
-                    type="password",
-                    key="signin_pw",
-                    placeholder="Enter your password",
-                )
-
-
-                st.markdown(
-                    '<div class="forgot-password-link">'
-                    '<a href="?auth_mode=forgot_password">'
-                    'Forgot password?</a>'
-                    '</div>',
-                    unsafe_allow_html=True,
-                )
-
-                submitted = st.form_submit_button(
-                    "Sign in",
-                    use_container_width=True,
-                    type="primary",
-                )
-
-            if submitted:
-                if not _valid_email(email):
-                    st.session_state.auth_error = (
-                        "Enter a valid email address."
+                with st.form("signin_form", clear_on_submit=False):
+                    email = st.text_input(
+                        "Email address",
+                        key="signin_email",
+                        placeholder="name@example.com",
                     )
+
+                    password = st.text_input(
+                        "Password",
+                        type="password",
+                        key="signin_pw",
+                        placeholder="Enter your password",
+                    )
+
+                    st.markdown(
+                        '<div class="forgot-password-link">'
+                        '<a href="?auth_mode=forgot_password">'
+                        'Forgot password?</a>'
+                        '</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                    submitted = st.form_submit_button(
+                        "Sign in",
+                        use_container_width=True,
+                        type="primary",
+                    )
+
+                if submitted:
+                    if not _valid_email(email):
+                        st.session_state.auth_error = (
+                            "Enter a valid email address."
+                        )
+                        st.rerun()
+
+                    if not password:
+                        st.session_state.auth_error = (
+                            "Enter your password."
+                        )
+                        st.rerun()
+
+                    result = supabase_client.sign_in_with_password(
+                        email.strip(), password
+                    )
+
+                    if "error" in result:
+                        st.session_state.auth_error = result["error"]
+
+                    else:
+                        _set_authenticated_user(result)
+                        st.session_state.current_view = "scorer"
+
                     st.rerun()
 
-                if not password:
-                    st.session_state.auth_error = (
-                        "Enter your password."
-                    )
+                # SIGNIN PAGE TOGGLE
+                if st.button(
+                    "New to ResumeATS? Create an account",
+                    key="auth_switch_to_signup",
+                    type="tertiary",
+                ):
+                    st.session_state["auth_mode"] = "signup"
                     st.rerun()
-
-                result = supabase_client.sign_in_with_password(
-                    email.strip(), password
-                )
-
-                if "error" in result:
-                    st.session_state.auth_error = result["error"]
-
-                else:
-                    _set_authenticated_user(result)
-                    st.session_state.current_view = "scorer"
-
-                st.rerun()
-
-
-            # SIGNIN PAGE TOGGLE
-                       
-            if st.button(
-                "Don't have an account? Sign up",
-                key="auth_switch_to_signup",
-                type="tertiary",
-            ):
-                st.session_state["auth_mode"] = "signup"
-                st.rerun()
-
 
         # GOOGLE OAUTH
         if not is_update_password and not is_forgot_password:
@@ -330,16 +332,26 @@ def render() -> None:
                     "Check the Supabase OAuth configuration."
                 )
             else:
-                st.link_button(
-                    "Continue with Google",
-                    url=oauth["url"],
-                    use_container_width=True,
+                google_url = escape(oauth["url"], quote=True)
+
+                st.markdown(
+                    f'''
+                    <a class="google-oauth-button" href="{google_url}">
+                        <svg viewBox="0 0 48 48" aria-hidden="true">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 37.97 46.98 31.87 46.98 24.55Z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19Z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.89 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </a>
+                    ''',
+                    unsafe_allow_html=True,
                 )
 
             st.markdown(
                 '<p class="auth-small-note">'
-                'Your resume can contain personal information. '
-                'Only upload documents you are comfortable analyzing.'
+                'ResumeATS analyzes your resume to generate useful feedback and improvement suggestions.'
                 '</p>',
                 unsafe_allow_html=True,
             )

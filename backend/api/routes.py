@@ -75,8 +75,8 @@ async def analyze_resume(
             job_description=job_description,
         )
     except Exception as exc:
-        logger.error(f'Full analysis pipeline failed: {exc}')
-        raise HTTPException(status_code=500, detail=f'Analysis pipeline failed: {exc}')
+        logger.exception('Full analysis pipeline failed')
+        raise HTTPException(status_code=500, detail='Resume analysis failed. Please try again.')
 
     role_match_result = None
     if result.get("role_match_analysis"):
@@ -152,7 +152,7 @@ async def get_history(user_id: str = Depends(get_current_user)):
         return await get_user_history(user_id)
     except Exception as exc:
         logger.error(f'History fetch failed: {exc}')
-        raise HTTPException(status_code=500, detail=f'Could not load history: {exc}')
+        raise HTTPException(status_code=500, detail='Could not load analysis history. Please try again.')
 
 
 @router.delete('/history/{analysis_id}')
@@ -171,7 +171,7 @@ async def delete_history_entry(
         raise
     except Exception as exc:
         logger.error(f'History delete failed: {exc}')
-        raise HTTPException(status_code=500, detail=f'Could not delete: {exc}')
+        raise HTTPException(status_code=500, detail='Could not delete the analysis. Please try again.')
     
 
 @router.post('/generate-pdf')
@@ -196,7 +196,7 @@ async def generate_pdf(
         )
     except Exception as e:
         logger.error(f'Failed to generate PDF: {e}')
-        raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {e}")
+        raise HTTPException(status_code=500, detail="PDF generation failed. Please try again.")
     
 
 @router.get('/history/{analysis_id}/pdf')
@@ -228,4 +228,4 @@ async def generate_history_pdf(
         )
     except Exception as e:
         logger.error(f'Failed to generate PDF for history: {e}')
-        raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {e}")
+        raise HTTPException(status_code=500, detail="PDF generation failed. Please try again.")

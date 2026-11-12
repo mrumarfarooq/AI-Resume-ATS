@@ -17,7 +17,8 @@ APP_VERSION='1.0.0'
 APP_DESCRIPTION='Analyze resume quality and compare resumes against curated job-role profiles.'
 
 ALLOWED_ORIGINS = [
-    'https://appapppy-ktwxupi73vqhjzweksze9d.streamlit.app/'
+    'http://localhost:8501',
+    'https://appapppy-ktwxupi73vqhjzweksze9d.streamlit.app'
 ]  
 
 #file 

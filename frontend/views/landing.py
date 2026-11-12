@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit.components.v1 as components
 
 def render():
     st.markdown("""
@@ -30,41 +29,37 @@ def render():
     )
 
     if st.session_state.pop("scroll_to_features", False):
-        components.html(
-            """
+        scroll_request_id = st.session_state.get("scroll_request_id", 0)
+
+        st.iframe(
+            f"""
             <script>
+            const requestId = {scroll_request_id};
             let attempts = 0;
 
-            const scrollToFeatures = () => {
+            const scrollToFeatures = () => {{
                 const doc = window.parent.document;
                 const target = doc.getElementById("features-section");
 
-                if (!target) {
+                if (!target) {{
                     attempts++;
-                    if (attempts < 20) {
-                        setTimeout(scrollToFeatures, 70);
-                    }
+
+                    if (attempts < 20) {{
+                        setTimeout(scrollToFeatures, 100);
+                    }}
+
                     return;
-                }
+                }}
 
-                const scroller =
-                    doc.querySelector('[data-testid="stMain"]') ||
-                    doc.querySelector("section.main") ||
-                    doc.scrollingElement;
+                target.scrollIntoView({{
+                    behavior: "smooth",
+                    block: "start"
+                }});
+            }};
 
-                const targetTop = target.getBoundingClientRect().top;
-                const scrollTop = scroller.getBoundingClientRect
-                    ? scroller.scrollTop + targetTop -
-                      scroller.getBoundingClientRect().top - 20
-                    : targetTop;
-
-                scroller.scrollTo({
-                    top: scrollTop,
-                    behavior: "smooth"
-                });
-            };
-
-            setTimeout(scrollToFeatures, 120);
+            requestAnimationFrame(() => {{
+                setTimeout(scrollToFeatures, 150);
+            }});
             </script>
             """,
             height=1,
@@ -86,9 +81,9 @@ def render():
 
     st.markdown('<div class="saas-section-intro how-intro"><div class="saas-kicker">A SIMPLE WORKFLOW</div><h2>From upload to useful insight</h2><p>Three straightforward steps. You stay in control throughout.</p></div>', unsafe_allow_html=True)
     steps = [
-      ("01", "Upload your resume", "Add your PDF or DOCX resume securely to begin."),
-      ("02", "Review the analysis", "Explore your ATS score, skill evidence, and optional job role match."),
-      ("03", "Improve with confidence", "Use clear feedback and download your report."),
+    ("01", "Upload your resume", "Upload your latest resume in PDF or DOCX format to start your ATS evaluation."),
+    ("02", "Review the analysis", "Review your ATS score, skill evidence, and how well your resume matches a target role."),
+    ("03", "Improve with confidence", "Use actionable feedback to strengthen your resume and download your analysis report."),
     ]
     step_cols = st.columns(3, gap="large")
     for col, (n, title, desc) in zip(step_cols, steps):

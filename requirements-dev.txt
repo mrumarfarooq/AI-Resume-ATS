@@ -1,0 +1,6 @@
+# Include all production dependencies for local development.
+-r requirements.txt
+
+# Development-only testing dependency.
+# Pytest discovers and runs automated tests to verify application logic.
+pytest>=9.0

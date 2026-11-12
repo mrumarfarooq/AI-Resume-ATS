@@ -1,18 +1,18 @@
 import re
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from backend.models.schemas import IssueDetail
 
 def analyze_issues(
-        resume_text: str, 
-        parsed_resume: Dict, 
-        skills: List[str], 
-        projects: List[Dict], 
-        action_verbs: List[str], 
-        skill_validation: Dict, 
-        scores: Dict, 
-        contact_info: Optional[Dict]=None, 
+        resume_text: str,
+        parsed_resume: Dict,
+        skills: List[str],
+        projects: List[Dict],
+        action_verbs: List[str],
+        skill_validation: Dict,
+        scores: Dict,
+        contact_info: Optional[Dict]=None,
 ) -> List[IssueDetail]:
-    
+
     detected: List[IssueDetail]=[]
 
     #Unpack frequently-used structured fields once at the top
@@ -56,18 +56,20 @@ def analyze_issues(
                 "Add a 'PROJECTS' section heading after your Experience section",
                 "Include 2–3 projects (personal, academic, or open-source)",
                 "For each project: write the title, tech stack used, what you built, and a measurable result",
-                "Example: 'E-Commerce Platform — React, Node.js, MongoDB. Handled 500+ transactions/month'",
+                "Example: '[Actual Project Name] — [Technologies genuinely used]. "
+                "Describe the features you implemented and your actual contribution.'",
                 "Link to GitHub or a live demo if available (e.g., github.com/yourname/project)",
             ],
 
             example_improvement=(
-                "Add:\n"
+                "Suggested structure:\n"
                 "PROJECTS\n"
-                "• E-Commerce Platform — Built a full-stack shopping site using "
-                "React, Node.js, and MongoDB. Implemented payment processing with "
-                "Stripe, handling 500+ transactions/month.\n"
-                "• ML Sentiment Analyzer — Trained a BERT model on 10K reviews "
-                "achieving 92% accuracy. Deployed as a REST API with FastAPI."
+                "[Actual Project Name] — [Briefly describe what you built] "
+                "using [technologies actually used].\n"
+                "• Implemented [actual feature or functionality].\n"
+                "• Describe your actual contribution and any verified outcome.\n\n"
+                "Add only projects you have genuinely built. Do not invent "
+                "technologies, features, users, or performance metrics."
             ),
         ))
 
@@ -102,15 +104,20 @@ def analyze_issues(
                 "Start every bullet with a past-tense action verb (Developed, Built, Led, etc.)",
             ],
             example_improvement=(
-                "Add:\n"
+                "Suggested structure:\n"
                 "EXPERIENCE\n"
-                "Software Engineering Intern — XYZ Corp (Jun 2025 – Aug 2025)\n"
-                "• Developed REST APIs with FastAPI serving 10K requests/day\n"
-                "• Reduced page load time by 40% through caching optimization"
+                "[Actual Job Title] — [Actual Company or Organization]\n"
+                "[Actual Start Date] – [Actual End Date or Present]\n"
+                "• Describe a responsibility you genuinely handled using "
+                "[actual technology or skill].\n"
+                "• Explain a task you completed and its actual outcome.\n\n"
+                "If you are a fresher without formal work experience, do not "
+                "invent employment. Highlight genuine internships, training, "
+                "academic work, or projects in their appropriate sections."
             ),
         ))
 
-    #3. Missing Education Section 
+    #3. Missing Education Section
     has_education_signal = any(kw in resume_lower for kw in [
         'b.tech', 'btech', 'b.e.', 'b.sc', 'bsc', 'm.tech', 'mtech', 'm.sc',
         'bachelor', 'master', 'phd', 'university', 'college',
@@ -138,14 +145,18 @@ def analyze_issues(
                 "Optionally list 3–5 relevant courses (e.g., Data Structures, DBMS, ML)",
             ],
             example_improvement=(
-                "Add:\n"
+                "Suggested structure:\n"
                 "EDUCATION\n"
-                "B.Tech in Computer Science — IIT Delhi (2021–2025)\n"
-                "CGPA: 8.5 | Relevant Coursework: Data Structures, ML, DBMS"
+                "[Actual Degree or Diploma]\n"
+                "[Actual College or Institution]\n"
+                "[Actual Graduation Year]\n"
+                "CGPA / Percentage: [Actual Score, if applicable]\n\n"
+                "Use your real educational qualifications, institution, "
+                "graduation year, and verified academic score."
             ),
         ))
 
-    #4. Missing Skills Section 
+    #4. Missing Skills Section
     if not parsed_resume.get('skills') and len(skills) < 3:  # only flag if extraction also found very few skills
         detected.append(IssueDetail(
             issue_title="Missing or Weak Skills Section",
@@ -170,11 +181,15 @@ def analyze_issues(
                 "Include tools you use daily: Git, VS Code, Postman, Docker, etc.",
             ],
             example_improvement=(
-                "Add:\n"
+                "Suggested structure:\n"
                 "TECHNICAL SKILLS\n"
-                "Languages: Python, JavaScript, TypeScript, SQL\n"
-                "Frameworks: React, FastAPI, Django, Express.js\n"
-                "Tools: Docker, Git, AWS, PostgreSQL, MongoDB"
+                "Programming Languages: [Languages you genuinely know]\n"
+                "Frameworks: [Frameworks you have actually used]\n"
+                "Databases: [Databases you have actually worked with]\n"
+                "Tools: [Tools you have genuinely used]\n\n"
+                "Include only skills you can explain and demonstrate in an "
+                "interview. Do not add technologies just because they appear "
+                "in a job description."
             ),
         ))
 
@@ -183,17 +198,20 @@ def analyze_issues(
     validated   = skill_validation.get('validated_skills', [])
     total_skills = len(unvalidated) + len(validated)
 
-    if total_skills > 0 and len(unvalidated) > len(validated):
+    if unvalidated:
         unsupported_list = ', '.join(unvalidated[:8])
         pct_unsupported = round((len(unvalidated) / total_skills) * 100)
         action_items_skills = [
             f"Mention '{skill}' in a project or experience bullet point" for skill in unvalidated[:5]
         ]
         action_items_skills.append("Remove skills you cannot demonstrate with any project or experience")
-        if len(unvalidated) > 5:
-            action_items_skills.append(f"({len(unvalidated) - 5} more unvalidated skills — review each one)")
+
         detected.append(IssueDetail(
-            issue_title="Most Skills Lack Supporting Evidence",
+            issue_title=(
+                "Most Skills Lack Supporting Evidence"
+                if len(unvalidated) > len(validated)
+                else "Some Skills Lack Supporting Evidence"
+            ),
             severity_level="Moderate",
             ats_impact="High",
             explanation=(
@@ -211,13 +229,15 @@ def analyze_issues(
             action_items=action_items_skills,
             example_improvement=(
                 f"Your skill '{unvalidated[0]}' has no supporting evidence.\n\n"
-                f"Fix: Add to a project or experience bullet:\n"
-                f"'Built a data pipeline using {unvalidated[0]} that processed "
-                "10K records daily, reducing manual effort by 60%.'"
+                f"Suggested improvement: If you have genuinely used "
+                f"{unvalidated[0]}, describe the specific project, task, "
+                "or experience where you applied it.\n"
+                "Explain what you implemented and what your actual contribution was.\n\n"
+                "Do not invent project details, responsibilities, or performance metrics."
             ),
         ))
 
-    #6. Weak Action Verbs 
+    #6. Weak Action Verbs
     description_lines = [
         line.strip()
         for exp in exp_entries
@@ -250,16 +270,18 @@ def analyze_issues(
                 "Avoid weak openers like 'Was responsible for...' or 'Involved in...'",
             ],
             example_improvement=(
-                "Before:\n"
+                "Before — Generic bullet points:\n"
                 "• Responsible for building the backend\n"
                 "• Worked on the payment feature\n\n"
-                "After:\n"
-                "• Developed a REST API with FastAPI handling 5K daily requests\n"
-                "• Implemented Stripe payment integration reducing checkout time by 30%"
+                "After — More specific and evidence-based:\n"
+                "• Developed backend functionality using [actual technology used]\n"
+                "• Implemented [actual feature] to support [specific application functionality]\n\n"
+                "Replace the placeholders with technologies and features you "
+                "actually used. Add measurable results only when they can be verified."
             ),
         ))
 
-    #7. No Quantifiable Achievements 
+    #7. No Quantifiable Achievements
     number_pattern = r'\d+[%+]?|\$\d+'
     has_metrics = bool(re.findall(number_pattern, experience_text)) if experience_text else False
 
@@ -282,21 +304,28 @@ def analyze_issues(
             action_items=[
                 "Go through each bullet point and ask: 'How much?', 'How many?', 'By what %?'",
                 "Add metrics: users served, requests/day, % improvement, team size, time saved",
-                "Examples: '500+ daily users', 'reduced load time by 40%', 'handled 10K API calls/day'",
-                "If exact numbers aren't known, use reasonable estimates (e.g., '~200 users')",
-                "Aim for numbers in at least 50% of your experience bullets",
+                "Use only verified figures from actual project records, logs, reports, or documented results.",
+                "If exact numbers are unavailable, do not invent or guess metrics. Describe the actual impact qualitatively using truthful, verifiable details.",
+                "Quantify relevant experience bullets wherever reliable, verifiable metrics are available.",
             ],
             example_improvement=(
-                "Before:\n"
-                "• Improved application performance\n"
-                "• Managed a team of developers\n\n"
-                "After:\n"
-                "• Improved API response time by 45% through Redis caching\n"
-                "• Led a team of 5 developers delivering 3 features per sprint"
+                "BEFORE — Generic resume bullets:\n"
+                "• Worked on improving application performance.\n"
+                "• Responsible for database operations.\n"
+                "• Worked with a team to develop application features.\n\n"
+                "AFTER — More specific and evidence-based:\n"
+                "• Improved [actual application functionality] using "
+                "[technology genuinely used].\n"
+                "• Implemented [actual database task] to support "
+                "[specific application requirement].\n"
+                "• Developed [actual feature] as part of [actual project or role].\n\n"
+                "Include measurable results only when you have reliable evidence. "
+                "If metrics are unavailable, describe your actual contribution "
+                "without inventing numbers."
             ),
         ))
 
-    #8. Missing Contact Information 
+    #8. Missing Contact Information
     if contact_info:
         missing_contacts = []
         if not contact_info.get('email'):
@@ -329,14 +358,17 @@ def analyze_issues(
                 ),
                 action_items=contact_action_items,
                 example_improvement=(
-                    "Add at top:\n"
-                    "John Doe\n"
-                    "john.doe@email.com | +91-9876543210\n"
-                    "linkedin.com/in/johndoe | github.com/johndoe"
+                    "Suggested contact section:\n"
+                    "[Your Full Name]\n"
+                    "[Your Professional Email] | [Your Phone Number]\n"
+                    "[Your LinkedIn Profile URL]\n"
+                    "[Your GitHub or Portfolio URL, if available]\n\n"
+                    "Use your own valid contact details. Include only links "
+                    "and information that belong to you."
                 ),
             ))
 
-    # 9. Low Formatting Score 
+    # 9. Low Formatting Score
     formatting_score = scores.get('formatting_score', 20)
     if formatting_score < 10:
         detected.append(IssueDetail(
@@ -397,11 +429,14 @@ def analyze_issues(
                 "Keep it under 60 words — recruiters spend only 6 seconds on first scan",
             ],
             example_improvement=(
-                "Add:\n"
+                "Suggested structure:\n"
                 "PROFESSIONAL SUMMARY\n"
-                "Full-stack developer with 2+ years of experience building scalable "
-                "web applications using React, Node.js, and AWS. Passionate about "
-                "clean architecture and performance optimization."
+                "[Your actual education or experience level] with knowledge of "
+                "[your verified technical skills]. Built [actual project or "
+                "application] using [technologies genuinely used]. "
+                "Seeking opportunities in [your target role].\n\n"
+                "Replace every placeholder with your actual details. "
+                "Do not claim experience, skills, or achievements you cannot verify."
             ),
         ))
 

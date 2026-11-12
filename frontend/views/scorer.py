@@ -408,3 +408,8 @@ def render() -> None:
         st.markdown("---")
         display_results_dashboard(analysis)
         _render_export_buttons(analysis)
+
+        st.markdown("---")
+        st.caption(
+            "This is a transparent, project-defined resume-quality estimate—not an official ATS score or a prediction of hiring outcomes."
+        )

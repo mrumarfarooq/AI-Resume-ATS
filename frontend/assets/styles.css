@@ -654,7 +654,7 @@ h6 {
     transform: rotate(360deg);
   }
 }
-/* 
+/*
 Animation utility classes */
 .fade-in {
   animation: fadeIn var(--transition-slow) ease-out;
@@ -2201,17 +2201,19 @@ div[data-testid="stLinkButton"] {
 [data-testid="stAppViewContainer"] {
   padding-top: 0 !important;
 }
-
+/*
 [data-testid="stHeader"] {
-  height: 0 !important;
-  min-height: 0 !important;
+  min-height: 2rem !important;
+  height: 2rem !important;
   padding: 0 !important;
   margin: 0 !important;
+  background: transparent !important;
 }
-
-[data-testid="stToolbar"] {
+*/
+/*[data-testid="stToolbar"] {
   display: none !important;
-}
+}*/
+
 /* Fix excessive top spacing in Streamlit 1.66 */
 [data-testid="stMainBlockContainer"] {
   padding-top: 1rem !important;
@@ -2316,27 +2318,39 @@ div[data-testid="stLinkButton"] {
   color: #718096;
   font-size: 15px;
 }
+/* Premium feature cards */
 .saas-feature-card {
   box-sizing: border-box;
   height: 100%;
-  min-height: 315px;
-  padding: 27px 25px;
+  min-height: 325px;
+  padding: 29px 26px;
   border: 1px solid #e4eaf2;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 8px 25px rgba(16, 32, 51, 0.035);
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(16, 32, 51, 0.035);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
+
+.saas-feature-card:hover {
+  transform: translateY(-5px);
+  border-color: #c8d9ff;
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.10);
+}
+
 .saas-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 26px;
+  margin-bottom: 27px;
 }
+
 .saas-feature-number {
-  width: 42px;
-  height: 42px;
+  width: 43px;
+  height: 43px;
   display: grid;
   place-items: center;
   border-radius: 12px;
@@ -2344,37 +2358,58 @@ div[data-testid="stLinkButton"] {
   color: #2563eb;
   font-weight: 750;
   font-size: 13px;
+  transition: background 0.25s ease, transform 0.25s ease;
 }
+
+.saas-feature-card:hover .saas-feature-number {
+  background: #e3edff;
+  transform: scale(1.05);
+}
+
 .saas-card-mark {
   color: #8aa6d8;
   font-size: 20px;
+  transition: color 0.25s ease, transform 0.25s ease;
 }
+
+.saas-feature-card:hover .saas-card-mark {
+  color: #2563eb;
+  transform: translate(2px, -2px);
+}
+
+/* Preserve heading styles for both feature cards and workflow steps */
 .saas-feature-card h3,
 .saas-step h3 {
   color: #102033;
   font-size: 19px;
   font-weight: 700;
   margin: 0 0 12px;
+  letter-spacing: -0.3px;
 }
+
+/* Preserve paragraph styles for both sections */
 .saas-feature-card p,
 .saas-step p {
   color: #68788d;
   font-size: 14px;
   line-height: 1.75;
-  margin: 0 0 17px;
+  margin: 0 0 19px;
 }
+
 .saas-feature-card ul {
   list-style: none;
-  padding: 0;
+  padding: 15px 0 0;
   margin: auto 0 0;
   border-top: 1px solid #edf1f6;
-  padding-top: 15px;
 }
+
 .saas-feature-card li {
   color: #52647a;
   font-size: 13px;
-  margin: 8px 0;
+  line-height: 1.6;
+  margin: 9px 0;
 }
+
 .saas-feature-card li:before {
   content: "✓";
   color: #2563eb;
@@ -2384,20 +2419,38 @@ div[data-testid="stLinkButton"] {
 .how-intro {
   margin-top: 85px;
 }
+/* Premium workflow step cards */
 .saas-step {
+  box-sizing: border-box;
   height: 100%;
-  min-height: 175px;
-  border: 1px solid #e5eaf2;
-  border-radius: 15px;
-  padding: 24px;
-  background: #fbfcfe;
+  min-height: 250px;
+  padding: 27px 26px;
+  border: 1px solid #e4eaf2;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(16, 32, 51, 0.035);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
+
+.saas-step:hover {
+  transform: translateY(-4px);
+  border-color: #c8d9ff;
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.09);
+}
+
 .saas-step > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: #eff5ff;
   color: #2563eb;
-  font-weight: 800;
+  font-weight: 750;
   font-size: 13px;
-  display: block;
-  margin-bottom: 22px;
 }
 .saas-privacy {
   display: flex;
@@ -2634,17 +2687,47 @@ h3 {
   font-weight: 800;
   letter-spacing: 1.7px;
 }
+/* Landing page hero refinement */
 .saas-hero {
-  padding: 44px 24px 20px !important;
-  margin: 0 auto 8px !important;
+  padding: 64px 24px 30px !important;
+  margin: 0 auto 12px !important;
+  max-width: 1000px;
+  text-align: center;
+  align-items: center;
 }
+
+/* Hero badge */
+.saas-eyebrow {
+  padding: 11px 19px;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+}
+
+/* Main hero heading */
 .saas-hero h1 {
-  font-size: clamp(40px, 5vw, 60px) !important;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(48px, 5.4vw, 68px) !important;
+  line-height: 1.1;
+  letter-spacing: -2.8px;
+  margin: 29px 0 20px;
 }
+
+/* Hero description */
+.saas-hero-copy {
+  max-width: 740px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.85;
+}
+
+/* More breathing room before Features */
 .saas-section-intro {
-  margin-top: 54px !important;
+  margin-top: 105px !important;
 }
-.saas-feature-card,
+
+/* Workflow step card shadow */
 .saas-step {
   box-shadow: 0 8px 28px rgba(16, 36, 58, 0.045);
 }
@@ -2687,20 +2770,89 @@ h3 {
 [data-testid="stProgress"] > div > div {
   background: var(--ra-blue) !important;
 }
+/* Professional sidebar navigation */
 [data-testid="stSidebar"] {
-  background: #fff !important;
+  background: #ffffff !important;
   border-right: 1px solid var(--ra-line);
 }
+
+/* Default sidebar buttons */
 [data-testid="stSidebar"] [data-testid="stButton"] button {
-  justify-content: flex-start;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding: 0.65rem 0.85rem !important;
   border: 1px solid transparent !important;
-  background: transparent !important;
-  color: #52657c !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+  font-weight: 650 !important;
+  opacity: 1 !important;
+  transition: all 0.18s ease !important;
 }
+
+/* Default button text */
+[data-testid="stSidebar"] [data-testid="stButton"] button p,
+[data-testid="stSidebar"] [data-testid="stButton"] button span {
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+}
+
+/* Hover */
 [data-testid="stSidebar"] [data-testid="stButton"] button:hover {
   background: #f1f5fb !important;
-  color: var(--ra-blue) !important;
+  color: #1e40af !important;
+  -webkit-text-fill-color: #1e40af !important;
   border-color: #e2eaf5 !important;
+  transform: translateX(2px);
+}
+
+/* Active page */
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"] {
+  background: #edf3ff !important;
+  color: #1e40af !important;
+  -webkit-text-fill-color: #1e40af !important;
+  border: 1px solid #d9e5ff !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"] p,
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"] span {
+  color: #1e40af !important;
+  -webkit-text-fill-color: #1e40af !important;
+}
+/* Public landing page navigation */
+.st-key-public_home_button button,
+.st-key-public_features_button button {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #52657c !important;
+  box-shadow: none !important;
+}
+
+.st-key-public_home_button button:hover,
+.st-key-public_features_button button:hover {
+  background: #f1f5fb !important;
+  border-color: #e2eaf5 !important;
+  color: var(--ra-blue) !important;
+  transform: translateY(-1px);
+}
+
+/* Sign in navigation button */
+.st-key-public_signin_button button {
+  background: var(--ra-blue) !important;
+  border: 1px solid var(--ra-blue) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.12) !important;
+}
+
+.st-key-public_signin_button button:hover {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
 }
 div[data-testid="stTabs"] {
   max-width: 100%;
@@ -2815,11 +2967,23 @@ div[data-testid="stForm"] {
     font-size: 27px;
   }
   .saas-hero {
-    padding: 32px 8px 14px !important;
+    padding: 42px 12px 20px !important;
   }
+
   .saas-hero h1 {
-    font-size: 39px !important;
-    letter-spacing: -1.4px !important;
+    font-size: clamp(36px, 8vw, 44px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -1.5px !important;
+    text-align: center !important;
+  }
+
+  .saas-hero-copy {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .saas-section-intro {
+    margin-top: 65px !important;
   }
 }
 
@@ -2935,4 +3099,448 @@ button[kind="primary"] * {
 [data-testid="stFormSubmitButton"] button[kind="primaryFormSubmit"] * {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Sign out button */
+.st-key-sidebar_signout_button button {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #d9e2ee !important;
+  transition: all 0.18s ease !important;
+}
+
+/* Sign out hover */
+[data-testid="stSidebar"] .st-key-sidebar_signout_button button:hover {
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.15) !important;
+}
+
+[data-testid="stSidebar"] .st-key-sidebar_signout_button button:hover p,
+[data-testid="stSidebar"] .st-key-sidebar_signout_button button:hover span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* =========================================
+   Premium authentication page refinements
+   ========================================= */
+
+/* Authentication heading */
+.auth-card-heading {
+  padding: 18px 20px 10px;
+}
+
+.auth-card-heading h1 {
+  color: #102033;
+  font-size: 33px;
+  font-weight: 760;
+  letter-spacing: -1.2px;
+}
+
+.auth-card-heading p {
+  color: #718096;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Remove inner form border only on sign-in page */
+.st-key-signin-card div[data-testid="stForm"] {
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Signup form retains its own card styling */
+div[data-testid="stForm"] {
+  border: 1px solid #e1e8f2 !important;
+  border-radius: 16px !important;
+  padding: 23px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 28px rgba(16, 36, 58, 0.045) !important;
+}
+
+/* Shared sign-in card */
+.st-key-signin-card {
+  border: 1px solid #e1e8f2 !important;
+  border-radius: 16px !important;
+  padding: 23px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 28px rgba(16, 36, 58, 0.045) !important;
+}
+
+/* Shared signup card */
+.st-key-signup-card {
+  border: 1px solid #e1e8f2 !important;
+  border-radius: 16px !important;
+  padding: 23px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 28px rgba(16, 36, 58, 0.045) !important;
+}
+
+/* Remove inner signup form border */
+.st-key-signup-card div[data-testid="stForm"] {
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Google divider */
+.auth-or {
+  max-width: 510px;
+  margin: 16px auto 12px !important;
+  color: #8997aa;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* Google OAuth button */
+.google-oauth-button {
+  width: 100%;
+  max-width: 510px;
+  min-height: 46px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #dce4ef;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #26364a !important;
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 650;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 7px rgba(16, 36, 58, 0.025);
+}
+
+.google-oauth-button svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+}
+
+.google-oauth-button:hover {
+  background: #f8faff;
+  border-color: #b9ccef;
+  color: #1e40af !important;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Create account / Sign in switch */
+.st-key-auth_switch_to_signup button,
+.st-key-auth_switch_to_signin button {
+  width: 100%;
+  min-height: 38px !important;
+  margin-top: 5px;
+  padding: 7px 0 !important;
+  color: #52647a !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+.st-key-auth_switch_to_signup button:hover,
+.st-key-auth_switch_to_signin button:hover {
+  color: #2563eb !important;
+  background: transparent !important;
+}
+
+/* Privacy note */
+.auth-small-note {
+  color: #8997aa;
+  font-size: 11px;
+  line-height: 1.65;
+  margin: 13px auto !important;
+}
+
+/* Back to home */
+.st-key-auth_back_home button {
+  color: #64748b !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+}
+
+.st-key-auth_back_home button:hover {
+  color: #2563eb !important;
+  background: #f1f5fb !important;
+  border-color: #e2eaf5 !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 760px) {
+  .auth-card-heading {
+    padding: 14px 8px 8px;
+  }
+
+  .auth-card-heading h1 {
+    font-size: 29px;
+  }
+
+  div[data-testid="stForm"] {
+    padding: 18px !important;
+  }
+
+  .google-oauth-button {
+    min-height: 44px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .google-oauth-button {
+    transition: none;
+  }
+
+  .google-oauth-button:hover {
+    transform: none;
+  }
+}
+
+
+/* Compact, neutral privacy note */
+.auth-small-note {
+  max-width: 430px;
+  margin: 10px auto 12px !important;
+  color: #94a3b8;
+  font-size: 10px !important;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Simple account switch text link */
+.st-key-auth_switch_to_signup button,
+.st-key-auth_switch_to_signin button {
+  width: 100%;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 2px 0 0 !important;
+  padding: 4px 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  transition: color 0.2s ease !important;
+}
+
+.st-key-auth_switch_to_signup button:hover,
+.st-key-auth_switch_to_signin button:hover {
+  background: transparent !important;
+  border: none !important;
+  color: #1d4ed8 !important;
+  text-decoration: underline !important;
+  transform: none !important;
+}
+
+/* Compact spacing around Google sign-in */
+.auth-or {
+  margin: 5px auto 6px !important;
+}
+
+.google-oauth-button {
+  margin-top: 0 !important;
+}
+
+.auth-small-note {
+  margin: 8px auto 10px !important;
+}
+
+/* Sign-in account switch: simple text link */
+.st-key-auth_switch_to_signup button,
+.st-key-auth_switch_to_signin button {
+  width: 100% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 5px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  white-space: normal !important;
+}
+
+.st-key-auth_switch_to_signup button:hover,
+.st-key-auth_switch_to_signin button:hover {
+  background: transparent !important;
+  color: #1d4ed8 !important;
+  text-decoration: underline !important;
+  transform: none !important;
+}
+
+/* Forgot password: align to the left */
+.st-key-signin-card .forgot-password-link {
+  display: block !important;
+  width: 100% !important;
+  margin: 4px 0 12px !important;
+  text-align: left !important;
+}
+
+.st-key-signin-card [data-testid="stMarkdownContainer"]:has(.forgot-password-link) {
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.st-key-signin-card .forgot-password-link a {
+  display: inline-block !important;
+  text-align: left !important;
+}
+
+
+/* Responsive public navigation */
+
+/* Desktop: show desktop navbar only */
+.st-key-public-navbar-mobile {
+    display: none !important;
+}
+
+.st-key-public-mobile-menu {
+    display: none !important;
+}
+
+/* Mobile layout */
+@media (max-width: 760px) {
+
+    html,
+    body,
+
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    .main {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    /* Hide desktop navbar completely */
+    .st-key-public-navbar-desktop {
+        display: none !important;
+    }
+
+    /* Show mobile navbar */
+    .st-key-public-navbar-mobile {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0 12px !important;
+        overflow: visible !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    .st-key-public-navbar-mobile [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 8px !important;
+    }
+
+    /* Logo column */
+    .st-key-public-navbar-mobile [data-testid="column"]:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    /* Hamburger column */
+    .st-key-public-navbar-mobile [data-testid="column"]:last-child {
+        flex: 0 0 56px !important;
+        width: 56px !important;
+        min-width: 56px !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+
+    /* Hamburger wrapper */
+    .st-key-responsive_menu_toggle {
+        display: flex !important;
+        justify-content: flex-end !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        position: relative !important;
+        z-index: 20 !important;
+    }
+
+    .st-key-responsive_menu_toggle button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 48px !important;
+        min-width: 48px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        padding: 0 !important;
+        font-size: 23px !important;
+        background: #102033 !important;
+        color: #ffffff !important;
+        border: 1px solid #102033 !important;
+        border-radius: 10px !important;
+        pointer-events: auto !important;
+    }
+
+    /* Dropdown menu */
+    .st-key-public-mobile-menu {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px 12px !important;
+        margin: 6px 0 12px !important;
+        background: #ffffff !important;
+        border: 1px solid #e5eaf2 !important;
+        border-radius: 12px !important;
+        position: relative !important;
+        z-index: 15 !important;
+    }
+
+    .st-key-mob_nav_home,
+    .st-key-mob_nav_features,
+    .st-key-mob_nav_signin {
+        width: 100% !important;
+    }
+
+    .st-key-mob_nav_home button,
+    .st-key-mob_nav_features button {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        background: #ffffff !important;
+        color: #334155 !important;
+        border: 1px solid transparent !important;
+    }
+
+    .st-key-mob_nav_signin button {
+        width: 100% !important;
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: 1px solid #2563eb !important;
+    }
+
+    /* Move hero closer to navbar */
+    .saas-hero {
+        padding: 18px 12px !important;
+        margin: 0 auto 8px !important;
+    }
+
+    .saas-hero h1 {
+        margin-top: 18px !important;
+    }
 }

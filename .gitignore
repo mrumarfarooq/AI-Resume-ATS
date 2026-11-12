@@ -25,3 +25,8 @@ venv/
 
 # Local backup files
 *.backup
+
+# Local working backups (keep locally, exclude from GitHub)
+frontend/assets/styles.css.bak
+frontend/assets/styles.css.before-*
+frontend/streamlit_app.py.bak

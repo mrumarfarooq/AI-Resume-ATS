@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple
 import streamlit as st
 
 
-SEVERITY_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+SEVERITY_RANK = {"critical": 0, "high": 1, "moderate": 2, "medium": 2, "low": 3}
 
 
 def _collect_action_items(analysis: Dict[str, Any]) -> List[Tuple[str, str, str]]:
@@ -26,11 +26,35 @@ def _collect_action_items(analysis: Dict[str, Any]) -> List[Tuple[str, str, str]
 
 def display_action_items(analysis: Dict[str, Any]) -> None:
     items = _collect_action_items(analysis)
+
     if not items:
         return
 
-    st.markdown("### Action Items")
-    st.caption("Concrete steps to improve your score, sorted by urgency.")
+    grouped_items = {}
 
     for level, source, action in items:
-        st.markdown(f"- **{level.title()} · {source}** — {action}")
+        key = (level, source)
+
+        if key not in grouped_items:
+            grouped_items[key] = []
+
+        if action not in grouped_items[key]:
+            grouped_items[key].append(action)
+
+    st.markdown("### Improvement Checklist")
+    st.caption(
+        "Complete these tasks to strengthen your resume. "
+        "Each issue is grouped to make improvements easier to track."
+    )
+
+    for group_index, ((level, source), actions) in enumerate(grouped_items.items()):
+        st.markdown(f"**{source}**")
+        st.caption(f"Priority: {level.title()}")
+
+        for action_index, action in enumerate(actions):
+            st.checkbox(
+                action,
+                key=f"improvement_action_{group_index}_{action_index}",
+            )
+
+        st.divider()

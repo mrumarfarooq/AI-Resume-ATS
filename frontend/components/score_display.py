@@ -30,7 +30,7 @@ def display_overall_score(analysis: Dict[str, Any]) -> None:
             <div style="text-align:center; padding:2rem; background-color:{bg_color};
                         border-radius:15px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
                 <h1 style="color:{text_color}; font-size:4.5rem; margin:0; font-weight:bold;">
-                    {score:.0f}
+                    {int(score + 0.5)}
                 </h1>
                 <h3 style="color:{text_color}; margin:0.5rem 0;">Overall ATS Score</h3>
                 <p style="color:#666; margin-top:0.5rem;">{interpretation}</p>
@@ -38,7 +38,6 @@ def display_overall_score(analysis: Dict[str, Any]) -> None:
             """,
             unsafe_allow_html=True,
         )
-    st.caption("This is a transparent, project-defined resume-quality estimate—not an official ATS score or a prediction of hiring outcomes.")
 
 
 def display_score_breakdown(analysis: Dict[str, Any]) -> None:

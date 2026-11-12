@@ -20,7 +20,7 @@ def display_critical_issues(analysis: Dict[str, Any]) -> None:
         st.markdown("Your resume doesn't have any urgent issues. Nice work.")
         return
 
-    st.markdown("### Critical Issues")
+    st.markdown("### Priority Issues")
     st.error("These issues should be addressed first for better ATS performance.")
 
     for item in critical:

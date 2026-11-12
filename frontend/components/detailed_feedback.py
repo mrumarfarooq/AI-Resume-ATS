@@ -5,7 +5,7 @@ import streamlit as st
 from frontend.components._helpers import get_severity_style
 
 
-SEVERITY_ORDER = ["critical", "high", "medium", "low"]
+SEVERITY_ORDER = ["critical", "high", "moderate", "medium", "low"]
 
 
 def _group_by_severity(issues: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
@@ -44,13 +44,20 @@ def _render_issue(issue: Dict[str, Any]) -> None:
             st.markdown(f"**Where it appears:** {where}")
         if how_to_fix:
             st.markdown(f"**How to fix:** {how_to_fix}")
-        if action_items:
-            st.markdown("**Action items:**")
-            for item in action_items:
-                st.markdown(f"- {item}")
+
         if example:
-            st.markdown("**Example improvement:**")
-            st.code(example, language="text")
+            st.markdown("**Example Improvement**")
+
+            for line in example.splitlines():
+                line = line.strip()
+
+                if not line:
+                    continue
+
+                if line.startswith("•"):
+                    line = "- " + line.lstrip("•").strip()
+
+                st.markdown(line)
 
 
 def display_detailed_feedback(analysis: Dict[str, Any]) -> None:

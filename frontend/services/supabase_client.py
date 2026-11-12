@@ -94,6 +94,39 @@ def sign_up_with_password(email: str, password: str) -> Dict[str, Any]:
         logger.warning(f'sign_up failed: {exc}')
         return {'error': _humanize(exc)}
 
+
+def verify_signup_email_token(token_hash: str) -> Dict[str, Any]:
+    """Verify a signup email using Supabase TokenHash."""
+    err = _missing_config()
+    if err:
+        return {'error': err}
+
+    try:
+        # Use a separate client so verification does not disturb
+        # the existing cached authentication client.
+        client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+        resp = client.auth.verify_otp({
+            'token_hash': token_hash,
+            'type': 'email',
+        })
+
+        if not resp.user:
+            return {'error': 'Email verification could not be completed.'}
+
+        # Do not keep the verification-created session.
+        try:
+            client.auth.sign_out()
+        except Exception:
+            logger.warning('Could not clear temporary verification session')
+
+        return {'success': True, 'email': resp.user.email}
+
+    except Exception as exc:
+        logger.warning(f'email verification failed: {exc}')
+        return {'error': _humanize(exc)}
+
+
 def send_password_reset_email(email: str) -> Dict[str, Any]:
     err = _missing_config()
     if err:

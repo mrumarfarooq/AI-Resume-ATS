@@ -133,7 +133,15 @@ def validate_skills_with_projects(
         max_similarity    = 0.0
 
         for project in projects:
-            project_text = f"{project.get('title', '')} {project.get('description', '')}"
+            project_technologies = project.get('technologies', [])
+            if not isinstance(project_technologies, list):
+                project_technologies = []
+
+            project_text = (
+                f"{project.get('title', '')} "
+                f"{project.get('description', '')} "
+                f"{' '.join(str(tech) for tech in project_technologies)}"
+            )
             matched, sim = _skill_matches(skill, project_text, embedder, threshold)
             max_similarity = max(max_similarity, sim)
 
