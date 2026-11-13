@@ -129,6 +129,62 @@ flowchart TD
 
 For detailed component responsibilities, processing flow, and API documentation, see **[System Architecture](docs/architecture.md)**.
 
+## Application Screenshots
+
+Explore the main features of ResumeATS, including AI-assisted resume analysis, job description matching, actionable feedback, and downloadable PDF reports.
+
+### Landing Page
+
+![ResumeATS Landing Page](docs/screenshots/01-landing-page.png)
+
+### Authentication
+
+Secure account access with email/password and Google sign-in.
+
+![ResumeATS Authentication](docs/screenshots/02-authentication.png)
+
+### General ATS Analysis
+
+Overall ATS score with a detailed breakdown of formatting, keywords, content quality, skill validation, and ATS compatibility.
+
+![General ATS Analysis Results](docs/screenshots/03-general-ats-results.png)
+
+### Detailed Feedback
+
+Issue detection with severity classification, supporting evidence, and practical improvement guidance.
+
+![Detailed Resume Feedback](docs/screenshots/04-detailed-feedback.png)
+
+### Job Description Matching
+
+Compare resume skills and supporting experience against job-specific requirements.
+
+![Job Description Matching](docs/screenshots/05-job-description-match.png)
+
+### Improvement Checklist
+
+Actionable recommendations and improvement tasks, with options to export analysis reports.
+
+![Resume Improvement Checklist](docs/screenshots/06-improvement-checklist.png)
+
+### Analysis History
+
+Review saved resume analyses, compare scores, and access previous reports.
+
+![Analysis History](docs/screenshots/07-analysis-history.png)
+
+### PDF Reports
+
+Generate downloadable reports containing ATS scores, detailed findings, and recommendations.
+
+**ATS Score Overview**
+
+![ATS PDF Report Overview](docs/screenshots/08-pdf-report-overview.png)
+
+**Recommendations and Action Items**
+
+![ATS PDF Report Recommendations](docs/screenshots/09-pdf-report-details.png)
+
 ## Project Structure
 
 ```text
@@ -154,6 +210,10 @@ ai-resume-ats/
 ├── jupyter notebooks/
 │
 ├── docs/
+│   ├── screenshots/
+│   │   ├── 01-landing-page.png
+│   │   ├── 02-authentication.png
+│   │   └── ... (9 screenshots)
 │   └── architecture.md
 │
 ├── tests/
